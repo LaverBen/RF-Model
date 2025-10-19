@@ -16,9 +16,11 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(APP_SOURCES
+        app/logging.cpp
         app/main.cpp
         app/mainwindow.cpp
         app/mainwindow.h
+        app/logging.h
 )
 
 set(UI_FORMS

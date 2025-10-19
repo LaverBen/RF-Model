@@ -104,6 +104,17 @@ Both options automatically guard their respective subdirectories, so CMake will 
 
 ---
 
+### Logging
+
+RF-Model configures Qt logging categories for both the UI and engine layers at startup. Control the minimum severity that is printed without rebuilding the application by using either of the following mechanisms:
+
+* **Command line:** pass `--log-level <level>` when launching the binary, for example `./RF-Model --log-level debug`.
+* **Environment variable:** set `RF_MODEL_LOG_LEVEL` before starting the process, for example `RF_MODEL_LOG_LEVEL=warning ./RF-Model`.
+
+Valid levels are `debug`, `info`, `warning` (or `warn`), and `error` (alias `critical`). When no value is provided the logger defaults to `info` messages and above.
+
+---
+
 ## 🧹 Code Style & Quality Tooling
 
 The repository includes shared configuration files to ensure consistent formatting and linting across the codebase:
