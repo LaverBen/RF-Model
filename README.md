@@ -125,6 +125,11 @@ To verify changes locally before opening a pull request, mirror the CI pipeline:
 
 ---
 
+### Command-line options
+
+`RF-Model` supports Qt's standard help and version flags. Run `./RF-Model --help` to list available options, or `./RF-Model --version`
+(`-v`) to print the application version without starting the UI.
+
 ### Logging
 
 RF-Model configures Qt logging categories for both the UI and engine layers at startup. Control the minimum severity that is printed without rebuilding the application by using either of the following mechanisms:
