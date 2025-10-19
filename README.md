@@ -104,6 +104,19 @@ Both options automatically guard their respective subdirectories, so CMake will 
 
 ---
 
+## 🧪 Continuous Integration
+
+Automated builds run on GitHub Actions (`.github/workflows/ci.yml`) across **Ubuntu**, **Windows**, and **macOS**. Each job installs Qt 6 via `install-qt-action`, configures CMake in Release mode with `RFMODEL_BUILD_TESTS=ON`, and then compiles the project. When tests are enabled, the workflow executes `ctest` so failures surface directly in the job log. The Linux leg also invokes `run-clang-tidy` against the generated `compile_commands.json` compilation database to keep static-analysis findings visible in CI. Every job publishes the resulting build output (binaries, bundles, and `compile_commands.json`) as artifacts, giving contributors easy access to build products or logs when diagnosing failures.
+
+To verify changes locally before opening a pull request, mirror the CI pipeline:
+
+1. Install Qt 6 and generate a build directory with `cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DRFMODEL_BUILD_TESTS=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON`.
+2. Build with `cmake --build build` (or `cmake --build build --config Release` on multi-config generators such as Visual Studio).
+3. Run the test suite via `ctest --test-dir build --output-on-failure`.
+4. Execute `run-clang-tidy -p build` to reproduce the static-analysis checks performed in CI.
+
+---
+
 ### Logging
 
 RF-Model configures Qt logging categories for both the UI and engine layers at startup. Control the minimum severity that is printed without rebuilding the application by using either of the following mechanisms:
