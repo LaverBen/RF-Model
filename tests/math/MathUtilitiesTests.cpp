@@ -11,7 +11,7 @@ namespace {
 constexpr double kTolerance = 1e-9;
 
 void testVec2() {
-    using rfmodel::math::Vec2d;
+    using Vec2d = rfmodel::math::Vec2<double>;
 
     constexpr Vec2d a{1.0, 2.0};
     constexpr Vec2d b{3.0, -4.0};
@@ -34,7 +34,7 @@ void testVec2() {
 }
 
 void testVec3() {
-    using rfmodel::math::Vec3d;
+    using Vec3d = rfmodel::math::Vec3<double>;
 
     constexpr Vec3d a{1.0, 0.0, 0.0};
     constexpr Vec3d b{0.0, 1.0, 0.0};
