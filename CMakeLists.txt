@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.16)
 
 project(RF-Model VERSION 0.1 LANGUAGES CXX)
 
+option(RFMODEL_BUILD_TESTS "Build RF-Model test suite" ON)
+option(RFMODEL_BUILD_BENCH "Build RF-Model benchmarks" OFF)
+
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -67,4 +70,16 @@ install(TARGETS RF-Model
 
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(RF-Model)
+endif()
+
+if(RFMODEL_BUILD_TESTS)
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tests/CMakeLists.txt")
+        add_subdirectory(tests)
+    endif()
+endif()
+
+if(RFMODEL_BUILD_BENCH)
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/bench/CMakeLists.txt")
+        add_subdirectory(bench)
+    endif()
 endif()
