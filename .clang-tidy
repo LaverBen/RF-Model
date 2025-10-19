@@ -1,0 +1,19 @@
+Checks: >
+  -*,
+  bugprone-*,
+  clang-analyzer-*,
+  modernize-*,
+  performance-*,
+  readability-*,-readability-identifier-naming,-readability-magic-numbers,
+  misc-unused-parameters
+WarningsAsErrors: ''
+HeaderFilterRegex: '^(?!.*(moc_|qrc_|ui_)).*$'
+AnalyzeTemporaryDtors: false
+FormatStyle: file
+CheckOptions:
+  - key: modernize-use-trailing-return-type.UseAuto
+    value: 'false'
+  - key: modernize-use-nodiscard.ReplacementString
+    value: '[[nodiscard]]'
+ExtraArgs:
+  - "-std=c++17"

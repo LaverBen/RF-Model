@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 3.16)
 
 project(RF-Model VERSION 0.1 LANGUAGES CXX)
 
+option(RFMODEL_BUILD_TESTS "Build RF-Model test suite" ON)
+option(RFMODEL_BUILD_BENCH "Build RF-Model benchmarks" OFF)
+
+include(GNUInstallDirs)
+include(CTest)
+
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -12,11 +18,35 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
+set(APP_SOURCES
+        app/logging.cpp
+        app/main.cpp
+        app/mainwindow.cpp
+        app/mainwindow.h
+        app/logging.h
+)
+
+set(UI_FORMS
+        ui/mainwindow.ui
+)
+
 set(PROJECT_SOURCES
-        main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
+        ${APP_SOURCES}
+        ${UI_FORMS}
+)
+
+set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/ui)
+
+add_library(rfmodel_engine INTERFACE)
+target_include_directories(rfmodel_engine INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/engine/include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
+
+add_library(rfmodel_math INTERFACE)
+target_include_directories(rfmodel_math INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/math/include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -42,7 +72,11 @@ else()
     endif()
 endif()
 
-target_link_libraries(RF-Model PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(RF-Model PRIVATE Qt${QT_VERSION_MAJOR}::Widgets rfmodel_engine rfmodel_math)
+target_include_directories(RF-Model PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/app
+)
+target_compile_definitions(RF-Model PRIVATE RFMODEL_VERSION="${PROJECT_VERSION}")
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
@@ -58,13 +92,36 @@ set_target_properties(RF-Model PROPERTIES
     WIN32_EXECUTABLE TRUE
 )
 
-include(GNUInstallDirs)
+install(TARGETS rfmodel_engine rfmodel_math
+    EXPORT rfmodelTargets
+)
+
 install(TARGETS RF-Model
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
+install(DIRECTORY engine/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(DIRECTORY math/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+install(EXPORT rfmodelTargets
+    NAMESPACE rfmodel::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/RF-Model
+)
+
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(RF-Model)
+endif()
+
+if(RFMODEL_BUILD_TESTS)
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tests/CMakeLists.txt")
+        add_subdirectory(tests)
+    endif()
+endif()
+
+if(RFMODEL_BUILD_BENCH)
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/bench/CMakeLists.txt")
+        add_subdirectory(bench)
+    endif()
 endif()
