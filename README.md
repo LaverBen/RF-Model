@@ -92,3 +92,34 @@ For now, expect to use:
 * **C++17 or later** for core logic
 
 ---
+
+## 🧹 Code Style & Quality Tooling
+
+The repository includes shared configuration files to ensure consistent formatting and linting across the codebase:
+
+* `.clang-format` &ndash; C++ formatting rules derived from LLVM with Qt-friendly include ordering.
+* `.clang-tidy` &ndash; Static-analysis checks tailored for modern C++ while automatically skipping Qt-generated sources such as `moc_`, `qrc_`, and `ui_` files.
+* `.editorconfig` &ndash; Editor defaults for indentation, line endings, and whitespace across C++, CMake, and Markdown files.
+
+### Formatting C++ code
+
+Run `clang-format` locally before committing changes:
+
+```bash
+clang-format -i path/to/file.cpp path/to/header.h
+```
+
+Most IDEs (including Qt Creator and VS Code) can be configured to apply the project style automatically by pointing them to the repository root.
+
+### Running clang-tidy checks
+
+Invoke `clang-tidy` with the project configuration by passing the source file and build directory:
+
+```bash
+clang-tidy path/to/file.cpp \
+  -p /path/to/build/directory
+```
+
+Ensure your build directory is generated with CMake (e.g., `cmake -S . -B build`). The tidy configuration filters out auto-generated Qt files, so you only need to run the tool on manually authored sources.
+
+---
