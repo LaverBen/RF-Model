@@ -91,6 +91,17 @@ For now, expect to use:
 * **CMake** for building
 * **C++17 or later** for core logic
 
+### Build configuration options
+
+The top-level `CMakeLists.txt` exposes a couple of toggles to help keep your local build lean:
+
+| Option | Default | Description |
+| ------ | ------- | ----------- |
+| `RFMODEL_BUILD_TESTS` | `ON` | Enables the optional test suite (requires the `tests/` subdirectory). Disable with `-DRFMODEL_BUILD_TESTS=OFF` when you want a faster build or do not need the tests. |
+| `RFMODEL_BUILD_BENCH` | `OFF` | Enables the optional benchmarks (requires the `bench/` subdirectory). Turn on with `-DRFMODEL_BUILD_BENCH=ON` when you intend to build the benchmarks. |
+
+Both options automatically guard their respective subdirectories, so CMake will skip them when the directories are missing or the options are turned off.
+
 ---
 
 ## 🧹 Code Style & Quality Tooling
