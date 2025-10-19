@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    defaults:
+      run:
+        shell: bash
+
+    env:
+      BUILD_TYPE: Release
+      RFMODEL_BUILD_TESTS: ON
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install build tools (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-tidy
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: '6.6.2'
+          cache: true
+          modules: qtbase
+
+      - name: Configure CMake
+        run: |
+          QT_PREFIX_PATH="${Qt6_DIR:-$Qt5_DIR}"
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
+            -DRFMODEL_BUILD_TESTS=${RFMODEL_BUILD_TESTS} \
+            -DCMAKE_PREFIX_PATH="$QT_PREFIX_PATH" \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      - name: Build
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            cmake --build build --config ${BUILD_TYPE}
+          else
+            cmake --build build --parallel
+          fi
+
+      - name: Run tests
+        if: env.RFMODEL_BUILD_TESTS == 'ON'
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            ctest --test-dir build --output-on-failure --build-config ${BUILD_TYPE}
+          else
+            ctest --test-dir build --output-on-failure
+          fi
+
+      - name: Run clang-tidy
+        if: runner.os == 'Linux'
+        run: |
+          run-clang-tidy -p build
+
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ runner.os }}-build
+          path: |
+            build/compile_commands.json
+            build/RF-Model*
+            build/${{ env.BUILD_TYPE }}/RF-Model*
+          if-no-files-found: warn
