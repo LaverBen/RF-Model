@@ -34,6 +34,11 @@ set(PROJECT_SOURCES
 
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/ui)
 
+add_library(rfmodel_engine INTERFACE)
+target_include_directories(rfmodel_engine INTERFACE
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/include
+)
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(RF-Model
         MANUAL_FINALIZATION
@@ -57,7 +62,7 @@ else()
     endif()
 endif()
 
-target_link_libraries(RF-Model PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(RF-Model PRIVATE Qt${QT_VERSION_MAJOR}::Widgets rfmodel_engine)
 target_include_directories(RF-Model PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/app
 )
