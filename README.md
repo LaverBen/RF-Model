@@ -52,6 +52,14 @@ RF-Model aims to provide a more **intuitive and interactive** way to explore the
 
 ---
 
+## 📏 Units, Angles, and Coordinate Conventions
+
+RF-Model standardizes on SI units, degree-based UI controls, radian-based internals, and a right-handed coordinate frame. See
+[docs/UnitsAndConventions.md](docs/UnitsAndConventions.md) for the full reference covering axis directions, default RF
+parameters, and angle conversion guidance.
+
+---
+
 ## 🚀 Roadmap (High-Level)
 
 1. **Environment Setup**
