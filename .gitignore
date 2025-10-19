@@ -1,0 +1,19 @@
+# Build dirs
+/build*/
+CMakeFiles/
+CMakeCache.txt
+Makefile
+*.obj
+*.o
+*.pdb
+
+# Qt Creator
+*.user
+*.pro.user
+
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+*.app
