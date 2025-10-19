@@ -76,6 +76,7 @@ target_link_libraries(RF-Model PRIVATE Qt${QT_VERSION_MAJOR}::Widgets rfmodel_en
 target_include_directories(RF-Model PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/app
 )
+target_compile_definitions(RF-Model PRIVATE RFMODEL_VERSION="${PROJECT_VERSION}")
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
