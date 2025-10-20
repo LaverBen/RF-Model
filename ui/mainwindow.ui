@@ -16,12 +16,12 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="contentsMargins">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>0</width>
-      <height>0</height>
-     </rect>
+     <set>
+      <left>0</left>
+      <top>0</top>
+      <right>0</right>
+      <bottom>0</bottom>
+     </set>
     </property>
     <item>
      <widget class="QGraphicsView" name="sceneView"/>
